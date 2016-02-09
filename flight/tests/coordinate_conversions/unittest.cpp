@@ -56,7 +56,7 @@ protected:
   }
 };
 
-// Test fixture for bound_min_max()
+// Test fixture for RneFromLLA()
 class RneFromLLATest : public CoordConversion {
 protected:
   virtual void SetUp() {
@@ -85,3 +85,63 @@ TEST_F(RneFromLLATest, Equator) {
   ASSERT_NEAR(0, Rne[2][1], eps);
   ASSERT_NEAR(0, Rne[2][2], eps);
 };
+
+
+// Test fixture for LLA lineraization()
+class LLALineraization : public CoordConversion {
+protected:
+  virtual void SetUp() {
+  }
+
+  virtual void TearDown() {
+  }
+};
+
+TEST_F(LLA_linearization_floatTest, Equator) {
+  // Test location is Equator
+  float homeLLA[] = {0, 0, 0};
+  dTheta = 6378137;
+  dR = 6378137;
+
+  float T[3];
+  LLA_linearization_float(homeLLA[0], homeLLA[2], T);
+
+  float eps = 0.000001f;
+  ASSERT_NEAR(dR, T[0], eps);
+  ASSERT_NEAR(dTheta, T[1], eps);
+  ASSERT_NEAR(-homeLLA_D[2], T[2], eps);
+
+};
+
+TEST_F(LLA_linearization_floatTest, Boston) {
+  // Test location is Boston (According to wikipedia)
+  float homeLLA_D = {42.37, -71.03, 10};
+  dTheta = 4712227.96319408;
+  dR = 6378147;
+
+  float T[3];
+  LLA_linearization_float(homeLLA[0], homeLLA[2], T);
+
+  float eps = 0.000001f;
+  ASSERT_NEAR(dR, T[0], eps);
+  ASSERT_NEAR(dTheta, T[1], eps);
+  ASSERT_NEAR(-homeLLA_D[2], T[2], eps);
+
+};
+
+TEST_F(LLA_linearization_floatTest, Sydney) {
+  // Test location is Sydney, AUS (According to wikipedia)
+  float homeLLA_D = {-33.86, 151.2, 10};
+  dTheta = 5296422.59579607;
+  dR = 6378147;
+
+  float T[3];
+  LLA_linearization_float(homeLLA[0], homeLLA[2], T);
+
+  float eps = 0.000001f;
+  ASSERT_NEAR(dR, T[0], eps);
+  ASSERT_NEAR(dTheta, T[1], eps);
+  ASSERT_NEAR(-homeLLA_D[2], T[2], eps);
+
+};
+
